@@ -1,0 +1,41 @@
+/* General */
+body {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+    font-family: 'Bebas Neue', sans-serif;
+    flex-direction: column; /* Apilamos los elementos verticalmente */
+}
+
+/* Contenedor para la webcam y los textos */
+.container {
+    display: flex;
+    flex-direction: column; /* Ordenar verticalmente webcam y texto */
+    align-items: center; /* Centrar el contenido horizontalmente */
+    justify-content: center;
+}
+
+/* Webcam container */
+#webcam-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 400px; /* Ancho del contenedor de la webcam */
+    height: 400px; /* Altura del contenedor de la webcam */
+    border: 2px solid #333;
+    background-color: #f0f0f0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px; /* Separación con el texto */
+}
+
+/* Estilo para los textos de clasificación */
+.letras, .numero {
+    font-family: 'Bebas Neue', sans-serif; /* Aplicar la misma fuente a ambos */
+    font-size: 2rem; /* Mismo tamaño de fuente */
+    color: #333;
+    text-align: center;
+    margin: 0;
+}

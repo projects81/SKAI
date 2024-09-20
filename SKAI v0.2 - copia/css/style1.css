@@ -1,0 +1,73 @@
+/* Estilo del cuerpo (body) */
+body {
+  margin: 0;
+  background-color: #f0f0f0; /* Fondo de color actualizado */
+}
+
+/* Estilo para el contenedor */
+.video-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Fondo de color detrás */
+.video-background {
+  background-color: #f0f0f0; /* Fondo de color actualizado */
+}
+
+/* Estilo para el contenedor de la imagen y el texto */
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Estilo de la imagen orgánica */
+.organic {
+  width: auto;
+  height: 300px;
+  opacity: 1; /* Muestra la imagen inmediatamente */
+  animation: organicAnimation ease-in-out infinite alternate 2s;
+}
+
+/* Animación de achicarse y agrandarse de la imagen */
+@keyframes organicAnimation {
+  0% {
+    transform: scale(1.1); /* Inicio más grande */
+  }
+  100% {
+    transform: scale(0.9); /* Final más pequeño */
+  }
+}
+
+/* Estilo del contenedor de texto */
+.text-container {
+  text-align: center;
+  margin-top: 20px; /* Espacio entre la imagen y el texto */
+}
+
+/* Estilo del texto en español */
+.text-es {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 30px;
+  color: #010101; /* Color de texto */
+  margin: 0;
+  opacity: 1; /* Muestra el texto inmediatamente */
+}
+
+/* Estilo del texto en inglés */
+.text-en {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 25px;
+  color: #010101; /* Color de texto */
+  margin: 0;
+  opacity: 1; /* Muestra el texto inmediatamente */
+}

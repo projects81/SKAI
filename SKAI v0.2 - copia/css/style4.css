@@ -1,0 +1,57 @@
+/* Estilo del cuerpo (body) */
+body {
+  margin: 0;
+  background-color: #f0f0f0; /* Fondo de color actualizado */
+}
+
+/* Estilo del contenedor */
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Estilo del plástico */
+.plastic {
+  width: auto;
+  height: 300px;
+  opacity: 1; /* Muestra la imagen inmediatamente */
+  animation: plasticAnimation ease-in-out infinite alternate 2s;
+}
+
+/* Animación de achicarse y agrandarse del plástico */
+@keyframes plasticAnimation {
+  0% {
+    transform: scale(1.1); /* Inicio más grande */
+  }
+  100% {
+    transform: scale(0.9); /* Final más pequeño */
+  }
+}
+
+/* Estilo del contenedor de texto */
+.text-container {
+  text-align: center;
+  margin-top: 20px; /* Espacio entre el plástico y el texto */
+}
+
+/* Estilo del texto en español */
+.text-es {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 30px;
+  color: #010101; /* Color de texto */
+  margin: 0;
+  opacity: 1; /* Muestra el texto inmediatamente */
+}
+
+/* Estilo del texto en inglés */
+.text-en {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 25px;
+  color: #010101; /* Color de texto */
+  margin: 0;
+  opacity: 1; /* Muestra el texto inmediatamente */
+}
