@@ -109,16 +109,12 @@ async function predictImage() {
 
 // Definición de la función sendCommand que recibe un parámetro "printValue"
 async function sendCommand(printValue) {
-    // Construir la URL para la solicitud HTTP en base a printValue
-    const url = `http://192.168.0.14/${printValue === 'A' ? 'A' : printValue === 'B' ? 'B' : printValue === 'C' ? 'C' : printValue === 'D' ? 'D' : printValue === 'E' ? 'E' : 'F'}`;
-
-    
-    // Realizar una solicitud fetch a la URL construida
+    const url = `http://192.168.0.14/?command=${printValue}`;
     const response = await fetch(url);
     const responseData = await response.text();
-    
-    return responseData;
+    console.log("Respuesta del ESP32: ", responseData);
 }
+
 
 
 
