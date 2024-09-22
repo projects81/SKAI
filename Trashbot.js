@@ -1,41 +1,45 @@
-// URL del modelo y los metadatos proporcionados por Teachable Machine
-const imageURL = "https://teachablemachine.withgoogle.com/models/wLnBIqF8F/";
-let imageModel, webcam, imageLabelContainer, maxImagePredictions;
+// Definición del modelo de reconocimiento de imágenes
 
-// Función para inicializar el reconocimiento de imágenes
-async function initImageRecognition() {
-    // Cargar el modelo y los metadatos
-    const modelURL = imageURL + "model.json";
-    const metadataURL = imageURL + "metadata.json";
+        // URL del modelo y los metadatos proporcionados por Teachable Machine
+        const imageURL = "https://teachablemachine.withgoogle.com/models/wLnBIqF8F/";
+        let imageModel, webcam, imageLabelContainer, maxImagePredictions;
 
-    // Cargar el modelo de imágenes
-    imageModel = await tmImage.load(modelURL, metadataURL);
-    maxImagePredictions = imageModel.getTotalClasses();
+        // Función para inicializar el reconocimiento de imágenes
+        async function initImageRecognition() {
+            // Carga del modelo y los metadatos
+            const modelURL = imageURL + "model.json";
+            const metadataURL = imageURL + "metadata.json";
 
-    // Configuración de la cámara web
-    const flip = true;
-    webcam = new tmImage.Webcam(400, 400, flip);    // Iniciar la webcam
-    await webcam.setup();
-    await webcam.play();
-    window.requestAnimationFrame(imageLoop);
+            // Carga del modelo y obtención del número máximo de clases
+            imageModel = await tmImage.load(modelURL, metadataURL);
+            maxImagePredictions = imageModel.getTotalClasses();
 
-    // Mostrar el lienzo de la cámara web
-    document.getElementById("webcam-container").appendChild(webcam.canvas);
+            // Configuración de la cámara web y el lienzo para mostrar la imagen
+            const flip = true;
+            webcam = new tmImage.Webcam(400, 400, flip);    //Se crea una instancía de lac clase Webcam
+            await webcam.setup();
+            await webcam.play();
+            window.requestAnimationFrame(imageLoop);
 
-    // Crear contenedores para las etiquetas de clasificación
-    imageLabelContainer = document.getElementById("image-label-container");
-    for (let i = 0; i < maxImagePredictions; i++) {
-        imageLabelContainer.appendChild(document.createElement("div"));
-    }
-}
+            // Mostrar el lienzo de la cámara web en el contenedor
+            document.getElementById("webcam-container").appendChild(webcam.canvas);
 
-// Función para actualizar la imagen continuamente y predecir
-async function imageLoop() {
-    webcam.update();
-    await predictImage();
-    window.requestAnimationFrame(imageLoop);
-}
+            // Creación de contenedores para las etiquetas de clasificación
+            imageLabelContainer = document.getElementById("image-label-container");
+            for (let i = 0; i < maxImagePredictions; i++) {
+                imageLabelContainer.appendChild(document.createElement("div"));
+            }
+        }
 
+        // Función para actualizar y predecir las imágenes continuamente
+        async function imageLoop() {
+            webcam.update();
+            await predictImage();
+            window.requestAnimationFrame(imageLoop);
+        }
+
+        // Función para realizar las predicciones con el modelo de imágenes
+        // Función para realizar las predicciones con el modelo de imágenes
 // Variables para rastrear el estado anterior
 let previousPredictionState = [];
 
@@ -47,86 +51,72 @@ async function predictImage() {
     for (let i = 0; i < maxImagePredictions; i++) {
         let className = "";
         let sendSignal = "";
+        if (i === 0) {
+            className = "Plástico";
+            sendSignal = "A";
+        } else if (i === 1) {
+            className = "Papel y Cartón";
+            sendSignal = "B";
+        } else if (i === 2) {
+            className = "Orgánico";
+            sendSignal = "C";
+        } else if (i === 3) {
+            className = "Latas y Aluminio";
+            sendSignal = "D";
+        } else if (i === 4) {
+            className = "Indefinido";
+            sendSignal = "E";
+        } 
 
-        // Asignar las clases y los comandos correspondientes
-        switch (i) {
-            case 0:
-                className = "Plástico";
-                sendSignal = "A";
-                break;
-            case 1:
-                className = "Papel y Cartón";
-                sendSignal = "B";
-                break;
-            case 2:
-                className = "Orgánico";
-                sendSignal = "C";
-                break;
-            case 3:
-                className = "Latas y Aluminio";
-                sendSignal = "D";
-                break;
-            case 4:
-                className = "Indefinido";
-                sendSignal = "E";
-                break;
-            default:
-                sendSignal = "";
-        }
-
-        // Mostrar la probabilidad de la predicción
-        const classPrediction = `${className}: ${prediction[i].probability.toFixed(2)}`;
+    
+        const classPrediction =
+            className + ": " + prediction[i].probability.toFixed(2);
         imageLabelContainer.childNodes[i].innerHTML = classPrediction;
-
-        // Solo enviar si la probabilidad es mayor a 0.60
+    
         let printValue = prediction[i].probability > 0.60 ? sendSignal : "";
-
-        // Detectar cambios en las predicciones
+    
         if (previousPredictionState[i] !== printValue) {
             if (printValue !== "") {
                 console.log(`Predicción ${className}: ${printValue}`);
                 sendCommand(printValue); // Llamar a la función sendCommand con printValue
 
-                // Redirigir a la página de animación según el resultado
-                switch (printValue) {
-                    case "A":
-                        window.location.href = "animacion4.html";
-                        break;
-                    case "B":
-                        window.location.href = "animacion2.html";
-                        break;
-                    case "C":
-                        window.location.href = "animacion1.html";
-                        break;
-                    case "D":
-                        window.location.href = "animacion3.html";
-                        break;
-                    default:
-                        // No hacer nada para el caso "E" u otros
-                        break;
+                // Si se detecta "Botellas" con probabilidad > 0.70, redirigir a "animación1.html"
+                if (printValue === "C") {
+                    window.location.href = "animacion1.html";
+                }
+                if (printValue === "B") {
+                    window.location.href = "animacion2.html";
+                }
+                if (printValue === "D") {
+                    window.location.href = "animacion3.html";
+                }
+                if (printValue === "A") {
+                    window.location.href = "animacion4.html";
                 }
             }
         }
-
-        // Actualizar el estado de la predicción
+        
+    
         newPredictionState[i] = printValue;
     }
+    
+    
 
     // Actualizar el estado anterior
     previousPredictionState = newPredictionState;
+
 }
 
 // Definición de la función sendCommand que recibe un parámetro "printValue"
 async function sendCommand(printValue) {
-    // Construir la URL para enviar el comando al ESP32
-    const url = `http://192.168.0.14/${printValue}`;
-
-    try {
-        // Realizar la solicitud fetch a la URL del ESP32
-        const response = await fetch(url);
-        const responseData = await response.text();
-        console.log(`Respuesta del ESP32: ${responseData}`);
-    } catch (error) {
-        console.error('Error al enviar comando al ESP32:', error);
-    }
+    const url = `http://192.168.0.14/?command=${printValue}`;
+    const response = await fetch(url);
+    const responseData = await response.text();
+    console.log("Respuesta del ESP32: ", responseData);
 }
+
+
+
+
+        
+        
