@@ -80,7 +80,7 @@ async function predictImage() {
                 // Enviar el valor de predicción al ESP32
                 sendCommand(printValue);
 
-                // Redireccionar según el valor de predicción
+                setTimeout(() => {
                 if (printValue === "C") {
                     window.location.href = "animacion1.html";
                 }
@@ -93,6 +93,8 @@ async function predictImage() {
                 if (printValue === "A") {
                     window.location.href = "animacion4.html";
                 }
+            }, 6000);
+
             }
         }
         newPredictionState[i] = printValue;
