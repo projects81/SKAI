@@ -109,12 +109,12 @@ async function predictImage() {
 
 // Definición de la función sendCommand que recibe un parámetro "printValue"
 async function sendCommand(printValue) {
-    const url = `https://192.168.0.10/${printValue}`;
+    const url = `https://192.168.0.184/${printValue}`;
 
     try {
         const response = await fetch(url, {
             method: 'GET',
-            mode: 'no-cors', // Omitir el CORS para peticiones locales
+            mode: 'cors', // Omitir el CORS para peticiones locales
         });
 
         if (!response.ok) {
