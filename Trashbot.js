@@ -109,16 +109,18 @@ async function predictImage() {
 
 // Definición de la función sendCommand que recibe un parámetro "printValue"
 async function sendCommand(printValue) {
-    // Construir la URL para la solicitud HTTP en base a printValue
-    const url = `https://192.168.0.14/${printValue === 'A' ? 'A' : printValue === 'B' ? 'B' : printValue === 'C' ? 'C' : printValue === 'D' ? 'D' : printValue === 'E' ? 'E' : 'F'}`;
+    const url = `https://192.168.1.101/${printValue}`; // Asegúrate de que esta sea la IP del ESP32
 
-    
-    // Realizar una solicitud fetch a la URL construida
-    const response = await fetch(url);
+    // Realizar una solicitud fetch a la URL
+    const response = await fetch(url, {
+        method: 'GET',   // Método GET
+        mode: 'no-cors'  // Evitar problemas con CORS
+    });
+
     const responseData = await response.text();
-    
     return responseData;
 }
+
 
 
 
