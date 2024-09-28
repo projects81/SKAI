@@ -109,17 +109,25 @@ async function predictImage() {
 
 // Definición de la función sendCommand que recibe un parámetro "printValue"
 async function sendCommand(printValue) {
-    const url = `https://192.168.1.101/${printValue}`; // Asegúrate de que esta sea la IP del ESP32
+    const url = `https://192.168.0.14/${printValue}`;
 
-    // Realizar una solicitud fetch a la URL
-    const response = await fetch(url, {
-        method: 'GET',   // Método GET
-        mode: 'no-cors'  // Evitar problemas con CORS
-    });
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            mode: 'no-cors', // Omitir el CORS para peticiones locales
+        });
 
-    const responseData = await response.text();
-    return responseData;
+        if (!response.ok) {
+            throw new Error('Error al enviar el comando al ESP32');
+        }
+
+        const data = await response.text();
+        console.log('Respuesta del ESP32:', data);
+    } catch (error) {
+        console.error('Error en la solicitud:', error);
+    }
 }
+
 
 
 
