@@ -109,7 +109,7 @@ async function predictImage() {
 
 // Definición de la función sendCommand que recibe un parámetro "printValue"
 async function sendCommand(printValue) {
-    const url = https://192.168.1.184/${printValue};  // Cambia esto por la IP de tu ESP32
+    const url = http://192.168.1.184/${printValue};  // Cambia esto por la IP de tu ESP32
 
     try {
         const response = await fetch(url, {
