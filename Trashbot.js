@@ -1,45 +1,40 @@
-// Definición del modelo de reconocimiento de imágenes
+// URL del modelo y los metadatos proporcionados por Teachable Machine
+const imageURL = "https://teachablemachine.withgoogle.com/models/wLnBIqF8F/";
+let imageModel, webcam, imageLabelContainer, maxImagePredictions;
 
-        // URL del modelo y los metadatos proporcionados por Teachable Machine
-        const imageURL = "https://teachablemachine.withgoogle.com/models/wLnBIqF8F/";
-        let imageModel, webcam, imageLabelContainer, maxImagePredictions;
+// Función para inicializar el reconocimiento de imágenes
+async function initImageRecognition() {
+    const modelURL = imageURL + "model.json";
+    const metadataURL = imageURL + "metadata.json";
 
-        // Función para inicializar el reconocimiento de imágenes
-        async function initImageRecognition() {
-            // Carga del modelo y los metadatos
-            const modelURL = imageURL + "model.json";
-            const metadataURL = imageURL + "metadata.json";
+    // Cargar el modelo de Teachable Machine
+    imageModel = await tmImage.load(modelURL, metadataURL);
+    maxImagePredictions = imageModel.getTotalClasses();
 
-            // Carga del modelo y obtención del número máximo de clases
-            imageModel = await tmImage.load(modelURL, metadataURL);
-            maxImagePredictions = imageModel.getTotalClasses();
+    // Configuración de la cámara web
+    const flip = true;
+    webcam = new tmImage.Webcam(400, 400, flip);
+    await webcam.setup();
+    await webcam.play();
+    window.requestAnimationFrame(imageLoop);
 
-            // Configuración de la cámara web y el lienzo para mostrar la imagen
-            const flip = true;
-            webcam = new tmImage.Webcam(400, 400, flip);    //Se crea una instancía de lac clase Webcam
-            await webcam.setup();
-            await webcam.play();
-            window.requestAnimationFrame(imageLoop);
+    // Mostrar el lienzo de la cámara web
+    document.getElementById("webcam-container").appendChild(webcam.canvas);
 
-            // Mostrar el lienzo de la cámara web en el contenedor
-            document.getElementById("webcam-container").appendChild(webcam.canvas);
+    // Creación de contenedores para las etiquetas de clasificación
+    imageLabelContainer = document.getElementById("image-label-container");
+    for (let i = 0; i < maxImagePredictions; i++) {
+        imageLabelContainer.appendChild(document.createElement("div"));
+    }
+}
 
-            // Creación de contenedores para las etiquetas de clasificación
-            imageLabelContainer = document.getElementById("image-label-container");
-            for (let i = 0; i < maxImagePredictions; i++) {
-                imageLabelContainer.appendChild(document.createElement("div"));
-            }
-        }
+// Función para actualizar y predecir imágenes continuamente
+async function imageLoop() {
+    webcam.update();
+    await predictImage();
+    window.requestAnimationFrame(imageLoop);
+}
 
-        // Función para actualizar y predecir las imágenes continuamente
-        async function imageLoop() {
-            webcam.update();
-            await predictImage();
-            window.requestAnimationFrame(imageLoop);
-        }
-
-        // Función para realizar las predicciones con el modelo de imágenes
-        // Función para realizar las predicciones con el modelo de imágenes
 // Variables para rastrear el estado anterior
 let previousPredictionState = [];
 
@@ -48,9 +43,12 @@ async function predictImage() {
     const prediction = await imageModel.predict(webcam.canvas);
     let newPredictionState = [];
 
+    // Recorrer cada predicción para actualizar el estado y enviar el comando correspondiente
     for (let i = 0; i < maxImagePredictions; i++) {
         let className = "";
         let sendSignal = "";
+
+        // Asignar nombres y señales basadas en las clases de predicción
         if (i === 0) {
             className = "Plástico";
             sendSignal = "A";
@@ -66,21 +64,23 @@ async function predictImage() {
         } else if (i === 4) {
             className = "Indefinido";
             sendSignal = "E";
-        } 
+        }
 
-    
-        const classPrediction =
-            className + ": " + prediction[i].probability.toFixed(2);
+        const classPrediction = className + ": " + prediction[i].probability.toFixed(2);
         imageLabelContainer.childNodes[i].innerHTML = classPrediction;
-    
+
+        // Solo enviar el comando si la probabilidad es mayor a 60%
         let printValue = prediction[i].probability > 0.60 ? sendSignal : "";
-    
+
+        // Comparar el estado actual con el anterior para evitar enviar señales duplicadas
         if (previousPredictionState[i] !== printValue) {
             if (printValue !== "") {
                 console.log(`Predicción ${className}: ${printValue}`);
-                sendCommand(printValue); // Llamar a la función sendCommand con printValue
+                
+                // Enviar el valor de predicción al ESP32
+                sendCommand(printValue);
 
-                // Si se detecta "Botellas" con probabilidad > 0.70, redirigir a "animación1.html"
+                // Redireccionar según el valor de predicción
                 if (printValue === "C") {
                     window.location.href = "animacion1.html";
                 }
@@ -95,26 +95,21 @@ async function predictImage() {
                 }
             }
         }
-        
-    
         newPredictionState[i] = printValue;
     }
-    
-    
 
     // Actualizar el estado anterior
     previousPredictionState = newPredictionState;
-
 }
 
-// Definición de la función sendCommand que recibe un parámetro "printValue"
+// Función para enviar el comando al ESP32
 async function sendCommand(printValue) {
-    const url = `http://192.168.0.184/${printValue}`;
+    const url = `http://192.168.0.184/${printValue}`;  // Asegúrate de que esta IP corresponda al ESP32
 
     try {
         const response = await fetch(url, {
             method: 'GET',
-            mode: 'cors', // Omitir el CORS para peticiones locales
+            mode: 'cors', // Configurar correctamente el CORS si es necesario
         });
 
         if (!response.ok) {
@@ -127,3 +122,4 @@ async function sendCommand(printValue) {
         console.error('Error en la solicitud:', error);
     }
 }
+
