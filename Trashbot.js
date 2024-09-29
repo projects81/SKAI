@@ -106,7 +106,7 @@ async function predictImage() {
 
 // Función para enviar el comando al ESP32
 async function sendCommand(printValue) {
-    const url = `http://192.168.0.184/${printValue}`;  // Asegúrate de que esta IP corresponda al ESP32
+    const url = `http://192.168.206.109:8080/${printValue}`;  // Usa la IP actual de tu ESP32 y el puerto 8080
 
     try {
         const response = await fetch(url, {
@@ -124,4 +124,9 @@ async function sendCommand(printValue) {
         console.error('Error en la solicitud:', error);
     }
 }
+
+// Iniciar cuando la página cargue
+window.onload = function() {
+    initImageRecognition();
+};
 
