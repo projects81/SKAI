@@ -1,6 +1,7 @@
 // URL del modelo y los metadatos proporcionados por Teachable Machine
 const imageURL = "https://teachablemachine.withgoogle.com/models/wLnBIqF8F/";
 let imageModel, webcam, imageLabelContainer, maxImagePredictions;
+let hasSentCommand = false;  // Flag para detener predicciones
 
 // Función para inicializar el reconocimiento de imágenes
 async function initImageRecognition() {
@@ -30,9 +31,11 @@ async function initImageRecognition() {
 
 // Función para actualizar y predecir imágenes continuamente
 async function imageLoop() {
-    webcam.update();
-    await predictImage();
-    window.requestAnimationFrame(imageLoop);
+    if (!hasSentCommand) {  // Solo seguir prediciendo si no se ha enviado un comando
+        webcam.update();
+        await predictImage();
+        window.requestAnimationFrame(imageLoop);
+    }
 }
 
 // Variables para rastrear el estado anterior
@@ -63,7 +66,6 @@ async function predictImage() {
             sendSignal = "D";
         } else if (i === 4) {
             className = "Indefinido";
-            sendSignal = "E";
         }
 
         const classPrediction = className + ": " + prediction[i].probability.toFixed(2);
@@ -74,28 +76,30 @@ async function predictImage() {
 
         // Comparar el estado actual con el anterior para evitar enviar señales duplicadas
         if (previousPredictionState[i] !== printValue) {
-            if (printValue !== "") {
+            if (printValue !== "" && !hasSentCommand) {  // Asegurarse de que no se haya enviado previamente
                 console.log(`Predicción ${className}: ${printValue}`);
                 
                 // Enviar el valor de predicción al ESP32
                 sendCommand(printValue);
 
+                // Detener más predicciones y redirigir
+                hasSentCommand = true;
                 setTimeout(() => {
-                if (printValue === "C") {
-                    window.location.href = "animacion1.html";
-                }
-                if (printValue === "B") {
-                    window.location.href = "animacion2.html";
-                }
-                if (printValue === "D") {
-                    window.location.href = "animacion3.html";
-                }
-                if (printValue === "A") {
-                    window.location.href = "animacion4.html";
-                }
-            }, 2000);
+                    if (printValue === "C") {
+                        window.location.href = "animacion1.html";
+                    }
+                    if (printValue === "B") {
+                        window.location.href = "animacion2.html";
+                    }
+                    if (printValue === "D") {
+                        window.location.href = "animacion3.html";
+                    }
+                    if (printValue === "A") {
+                        window.location.href = "animacion4.html";
+                    }
+                }, 2000);
 
-
+                break;  // Rompe el bucle, ya que solo quieres enviar una vez y redirigir
             }
         }
         newPredictionState[i] = printValue;
@@ -130,4 +134,3 @@ async function sendCommand(printValue) {
 window.onload = function() {
     initImageRecognition();
 };
-
