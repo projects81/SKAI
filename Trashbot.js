@@ -93,7 +93,7 @@ async function predictImage() {
                 if (printValue === "A") {
                     window.location.href = "animacion4.html";
                 }
-            }, 4000);
+            }, 3500);
 
 
             }
