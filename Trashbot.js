@@ -111,7 +111,7 @@ async function predictImage() {
 
 // Función para enviar el comando al ESP32
 async function sendCommand(printValue) {
-    const url = `http://192.168.0.17:8080/${printValue}`;  // Usa la IP actual de tu ESP32 y el puerto 8080
+    const url = `http://192.168.46.109:8080/${printValue}`;  // Usa la IP actual de tu ESP32 y el puerto 8080
 
     try {
         const response = await fetch(url, {
