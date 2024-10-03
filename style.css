@@ -24,3 +24,37 @@ body {
     margin: 10px 0 0;
     color: #555;
 }
+
+/* Estilo para el video */
+video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1; /* Coloca el video detrás del contenido */
+}
+
+/* Estilo para el poster */
+video[poster] {
+  position: absolute;
+  width: 90%; /* Ajusta el ancho del poster según tus preferencias */
+  max-height: 90%; /* Ajusta la altura máxima del poster según tus preferencias */
+  object-fit: contain;
+  animation: zoomInOut 2s ease-in-out infinite alternate;
+  z-index: -1; /* Coloca el poster detrás del contenido */
+}
+
+/* Definir la animación zoomInOut */
+@keyframes zoomInOut {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(1.1);
+    }
+}
